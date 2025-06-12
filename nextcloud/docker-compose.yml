@@ -1,0 +1,70 @@
+version: "3.9"
+
+services:
+
+  db:
+    image: mariadb:10.6
+    container_name: nc-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${NEXTCLOUD_DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${NEXTCLOUD_DB_NAME}
+      MYSQL_USER: ${NEXTCLOUD_DB_USER}
+      MYSQL_PASSWORD: ${NEXTCLOUD_DB_PASSWORD}
+    volumes:
+      - ./db:/var/lib/mysql
+    networks:
+      - nextcloud_net
+
+  redis:
+    image: redis:alpine
+    container_name: nc-redis
+    restart: unless-stopped
+    volumes:
+      - ./redis:/data
+    networks:
+      - nextcloud_net
+
+  app:
+    build:
+      context: ./nc
+      dockerfile: Dockerfile
+    image: nc-custom
+    container_name: nc-app
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    environment:
+      MYSQL_PASSWORD: ${NEXTCLOUD_DB_PASSWORD}
+      MYSQL_DATABASE: ${NEXTCLOUD_DB_NAME}
+      MYSQL_USER: ${NEXTCLOUD_DB_USER}
+      MYSQL_HOST: db
+      NEXTCLOUD_ADMIN_USER: ${NEXTCLOUD_ADMIN_USER}
+      NEXTCLOUD_ADMIN_PASSWORD: ${NEXTCLOUD_ADMIN_PASSWORD}
+      REDIS_HOST: redis
+    volumes:
+      - ./nc/html:/var/www/html
+      - ./logs:/var/log/
+    depends_on:
+      - db
+      - redis
+    networks:
+      - nextcloud_net
+
+  onlyoffice:
+    image: onlyoffice/documentserver
+    container_name: nc-onlyoffice
+    restart: unless-stopped
+    environment:
+      JWT_ENABLED: "true"
+      JWT_SECRET: ${ONLYOFFICE_SECRET}
+    volumes:
+      - ./onlyoffice:/var/www/onlyoffice/Data
+    ports:
+      - "8080:80"
+    networks:
+      - nextcloud_net
+
+networks:
+  nextcloud_net:
+    driver: bridge

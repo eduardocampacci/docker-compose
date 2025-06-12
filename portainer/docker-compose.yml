@@ -1,0 +1,12 @@
+version: "3.8"
+
+services:
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    restart: always
+    ports:
+      - "9443:9443"  # Porta alta para acesso via HTTPS
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /opt/portainer/portainer_data:/data
