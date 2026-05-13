@@ -1,0 +1,25 @@
+# Dados persistentes de containers
+**/data/
+**/*_data/
+portainer/portainer_data/
+
+# Certificados e chaves
+*.pem
+*.key
+*.crt
+*.cert
+
+# Bancos locais
+*.db
+*.sqlite
+*.sqlite3
+
+# Env
+.env
+
+# Logs e temporários
+*.log
+*.tmp
+*.bak
+*.old
+*.swp
