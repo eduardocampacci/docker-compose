@@ -11,6 +11,7 @@ Repositório com stacks Docker Compose utilizados para estudos, laboratório e a
 | `nextcloud/` | Stack Nextcloud |
 | `portainer/` | Stack Portainer |
 | `snikket/` | Stack Snikket |
+| `wordpress/` | Stack WordPress + MySQL |
 
 ## Observações
 
